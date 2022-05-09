@@ -6,34 +6,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather App</title>
     <link rel="stylesheet" href="style.css"/>
-    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
-    <div id="site-header">
-        <h2>Weather</h2>
-        <div id="city">--</div>
-        <div id="date">--</div>
-
-    <div class="current">
-        <div id="hi-low">-- / --</div>
-        <div id="temp">
-            <div id="start-temp">--</div> 
-            <div id='feels-like'></div>
-            <div id='humidity'></div>
+    <div id="test-border">
+        <div id="site-header">
+            <h2>Weather</h2>
+            <div id="city">Loading...</div>
+            <div id="date">Loading...</div>
         </div>
-        <div id="weather">--</div>
+    
         
+        <div id="temp-div">
+            <div id="temp-label">Temperature:</div>
+            <div id="start-temp">Loading...</div>
+            <img id="temp-dropper" src="https://cdn2.iconfinder.com/data/icons/flat-blue-arrow-1/64/05-_down-_dropdown-bellow-_arrow-512.png" alt=''></img>
+            <div id="temp-dropdown">
+                <div class='drop' id="hi-low">Loading...</div>
+                <div class='drop' id='feels-like'>Loading...</div>
+                <div class='drop' id='humidity'>Loading...</div>
+            </div>
+        </div> 
         
-    </div>
+        <div id="search-div">
+            <input class='search-box' type="text" autocomplete="off" autocapitalize="on" placeholder="Search for city..."/>
+            <button id="search-button">Search</button>
+        </div>
 
-    <div id="weather-data">
-        
+        <div id="weather-div">
+            <p id="weather">Loading...</p> 
+            <img id='weather-icon' src="http://pa1.narvii.com/7813/e598d92f03ba176a084201b29cc5b544ca1722f7r1-200-200_00.gif" alt="">
+        </div>
     </div>
-
-    <div id="search-div">
-        <input class='search-box' type="text" autocomplete="off" autocapitalize="on" placeholder="Search for city..."/>
-        <button id="search-button">Search</button>
-    </div>
+    
     
     <script defer src="script.js"></script>
 </body>

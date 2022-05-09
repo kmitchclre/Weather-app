@@ -12,7 +12,8 @@ const feelsLike = document.querySelector('#feels-like')
 const weather = document.querySelector('#weather')
 const date = document.querySelector('#date')
 const time = document.querySelector('#time')
-
+const weatherIcon = document.querySelector('#weather-icon')
+const dropDown = document.querySelector('#temp-dropdown')
 
 const makeDate = () => {
   let newDate = `${new Date()}`.split(' ')
@@ -23,8 +24,19 @@ const makeDate = () => {
 }
 
 
-date.innerText = makeDate()
-
+// I had to use jquery to get a cool smooth animation ;-; sorry
+let lazyPatch = 0
+$("#temp-dropper").click(function () {
+  if (lazyPatch == 0) {
+    $('#temp-dropper').animate({"margin-left": '+=220'}).css('transform', 'rotate(90deg)');
+    $('#temp-dropdown').animate({"margin-left": '+=210'}).fadeIn('10');
+    lazyPatch += 1
+  } else {
+    $('#temp-dropper').animate({"margin-left": '-=220'}).css('transform', 'rotate(270deg)');
+    $('#temp-dropdown').fadeOut('10').animate({"margin-left": '-=210'});
+    lazyPatch -= 1
+  }
+});
 
 const searchBox = document.querySelector('.search-box')
 searchBox.addEventListener('keypress', setQuery)
@@ -83,13 +95,21 @@ function displayResults(results) {
 
     
       
-    hiLow.innerText = `${results.main.temp_min}°F / ${results.main.temp_max}°F`
-    startTemp.innerText = `${results.main.temp}°F`
-    feelsLike.innerText = `${results.main.feels_like}°F`
-    humidity.innerText = `${results.main.humidity}%`
-    weather.innerText = results.weather[`0`].description;
-    
+    hiLow.innerText = `High/Low: ${Math.floor(results.main.temp_min)}°F / ${Math.floor(results.main.temp_max)}°F`
+    startTemp.innerText = `${Math.floor(results.main.temp)}°F`
+    feelsLike.innerText = `Feels-like: ${Math.floor(results.main.feels_like)}°F`
+    humidity.innerText = `Humidity: ${results.main.humidity}%`
+    weather.innerText = (results.weather[`0`].description).replace(/(?:^|\s)\S/g, (a) => a.toUpperCase())
+    date.innerText = makeDate()
+    if (results.weather['0'].main == 'Clouds') {
+      weatherIcon.src = 'https://cdn-icons-png.flaticon.com/512/0/74.png'
+    } else if (results.weather['0'].main ==   'Clear') {
+      weatherIcon.src = 'https://cdn1.iconfinder.com/data/icons/weather-18/512/sunny_clear_blu_sky-512.png'
+    }
   }
 }
 
   getLocation()
+
+
+  // for each, day of the week
