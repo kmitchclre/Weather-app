@@ -202,7 +202,7 @@ const getHumidity = (arr) => {
       result.push(arr[i])
     }
   }
-  return result
+  return result // does the thing
 } 
 
 
