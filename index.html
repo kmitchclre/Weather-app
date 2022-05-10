@@ -7,6 +7,8 @@
     <title>Weather App</title>
     <link rel="stylesheet" href="style.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type='text/javascript' src='config.js'></script>
 </head>
 <body>
     <div id="test-border">
@@ -31,6 +33,11 @@
         <div id="search-div">
             <input class='search-box' type="text" autocomplete="off" autocapitalize="on" placeholder="Search for city..."/>
             <button id="search-button">Search</button>
+        </div>
+
+        <div id="hourly-dropdown-div">
+            <img id="hourly-dropper" src="https://cdn2.iconfinder.com/data/icons/flat-blue-arrow-1/64/05-_down-_dropdown-bellow-_arrow-512.png" alt=''></img>
+            <canvas id="hourly-dropdown"></canvas>
         </div>
 
         <div id="weather-div">
