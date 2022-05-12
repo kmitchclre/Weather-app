@@ -28,14 +28,14 @@ const makeDate = () => {
 let lazyPatch = 0
 $("#temp-dropper").click(() => {
   if (lazyPatch == 0) {
-    $('#temp-dropper').animate({"margin-left": '+=220', queue : false}).css('transform', 'rotate(90deg)');
+    $('#temp-dropper').css("margin-left", '+=220').css('transform', 'rotate(90deg)');
     $('#temp-dropdown').animate({opacity : 1}, 
     {duration : 500, queue : false})
     .animate({'margin-left' : '+=210'},
     {duration : 500, queue : false});
     lazyPatch += 1
   } else {
-    $('#temp-dropper').animate({"margin-left": '-=220', queue : false}).css('transform', 'rotate(270deg)');
+    $('#temp-dropper').css("margin-left", '-=220').css('transform', 'rotate(270deg)');
     $('#temp-dropdown').animate({opacity: 0, "margin-left": '-=210'}, 500);
     lazyPatch -= 1
   }
@@ -61,15 +61,15 @@ $('#hourly-dropper').click(() => {
 const searchBox = document.querySelector('.search-box')
 searchBox.addEventListener('keypress', setQuery)
 
-const searchButton = document.querySelector('#search-button')
+const searchButton = document.querySelector('#button')
 searchButton.addEventListener('click', setQueryOther)
 
 function setQuery(e) {
   if(e.keyCode === 13) {
     if (searchBox.value) {
       getResults(searchBox.value)
-    } else {
-      alert('Please enter a city into the search bar!')
+     } else {
+      alert('Please enter a city, state, or zip code into the search bar!')
     }
   }
 }
@@ -210,7 +210,7 @@ function setQueryOther(e) {
   if (searchBox.value) {
     getResults(searchBox.value)
   } else {
-    alert('Please enter a city into the search bar!')
+    alert('Please enter a city, state, or zip code into the search bar!')
   }
 }
 
@@ -231,9 +231,15 @@ const loadPos = (pos) => {
 
 
 function getResults(city) {
+  if (!parseInt(city)) {
     fetch(`${apiInfo.base}q=${city}&units=imperial&APPID=${key}`)
     .then(resp => resp.json())
     .then(data => displayResults(data));
+  } else {
+    fetch(`${apiInfo.base}zip=${city}&units=imperial&APPID=${key}`)
+    .then(resp => resp.json())
+    .then(data => displayResults(data));
+  }
 }
 
 
@@ -251,12 +257,8 @@ function displayResults(results) {
     humidity.innerText = `Humidity: ${results.main.humidity}%`
     weather.innerText = (results.weather[`0`].description).replace(/(?:^|\s)\S/g, (a) => a.toUpperCase())
     date.innerText = makeDate()
-    if (results.weather['0'].main == 'Clouds') {
-      weatherIcon.src = 'https://cdn-icons-png.flaticon.com/512/0/74.png'
-    } else if (results.weather['0'].main ==   'Clear') {
-      weatherIcon.src = 'https://cdn1.iconfinder.com/data/icons/weather-18/512/sunny_clear_blu_sky-512.png'
-    }
-  }
+    weatherIcon.src = `http://openweathermap.org/img/wn/${results.weather['0'].icon}@2x.png`
+   }
 }
 
   getLocation()
