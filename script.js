@@ -16,12 +16,13 @@ const time = document.querySelector('#time')
 const weatherIcon = document.querySelector('#weather-icon')
 const dropDown = document.querySelector('#temp-dropdown')
 
-const makeDate = () => {
-  let newDate = `${new Date()}`.split(' ')
-  newDate.splice(0, 1)
-  newDate.splice(3, 5)
-  const result = newDate.join(' ')
-  return result
+const makeDate = (timeZone) => {
+  let newDate = new Date(Date.now() + timeZone * 1000).toLocaleDateString(undefined, {
+    weekday: "long",
+    month: "long",
+    day: "numeric"
+    });
+  return newDate
 }
 
 // I had to use jquery to get a cool smooth animation ;-; sorry
@@ -248,7 +249,6 @@ function displayResults(results) {
     alert(`${results.message}`)
   } else {
     city.innerText = `${results.name}, ${results.sys.country}`
-
     loadGraph(results.coord.lat, results.coord.lon)
     
     hiLow.innerText = `High/Low: ${Math.floor(results.main.temp_max)}°F/${Math.floor(results.main.temp_min)}°F`
@@ -256,7 +256,7 @@ function displayResults(results) {
     feelsLike.innerText = `Feels-like: ${Math.floor(results.main.feels_like)}°F`
     humidity.innerText = `Humidity: ${results.main.humidity}%`
     weather.innerText = (results.weather[`0`].description).replace(/(?:^|\s)\S/g, (a) => a.toUpperCase())
-    date.innerText = makeDate()
+    date.innerText = makeDate(results.timezone)
     weatherIcon.src = `http://openweathermap.org/img/wn/${results.weather['0'].icon}@2x.png`
    }
 }
