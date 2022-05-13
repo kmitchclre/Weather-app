@@ -233,3 +233,24 @@ input:focus {
     border-radius: 40px;
 }
 
+.error-popup {
+    width: 150px;
+    height: 75px;
+    position: absolute;
+    background-color: rgba(16, 16, 16, 0.663);
+    border-radius: 20px;
+    font-size: 78%;
+    text-align: center;
+    color: #e26c45;
+    opacity: 0;
+}
+
+#temp-error {
+    right: 101%;
+    top: 20%;
+}
+
+#humidity-error {
+    right: 101%;
+    top: 41%
+}

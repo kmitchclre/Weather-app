@@ -189,7 +189,16 @@ const genTemps = (arr) => {
                         // so we can just push the element to the array with no changes and use that as data.
     }
   })
+  if (result.length < 28) {
+    tempErrorLoader()
+  }
+    // alert("Whoops! Something went wrong. Looks like we're missing some temperatures.")
   return result // does the thing
+}
+
+let sentErrors = {
+  temp: false,
+  humidity: false
 }
 
 // Okay, I have no idea what's going on with this function... It's totally the same in function as the other two,
@@ -203,8 +212,51 @@ const getHumidity = (arr) => {
       result.push(arr[i])
     }
   }
+  if (result.length < 28) {
+    humidityErrorLoader()
+  }
   return result // does the thing
 } 
+
+const tempErrorLoader = () => {
+  if (sentErrors.temp == false) {
+    $('#temp-error').css({'top': '20%'})
+    setTimeout(() => {
+      $('#temp-error').animate({opacity : 1}, 
+        {duration : 500, queue : false})
+        .animate({'top' : '+=21%'},
+        {duration : 500, queue : false});
+  
+        setTimeout(() => {
+          $('#temp-error').animate({opacity : 0}, 
+            {duration : 500, queue : false})
+            .animate({'top' : '+=21%'},
+            {duration : 500, queue : false})
+        }, 5000)
+    }, 1000)
+    sentErrors.temp = true
+  }
+}
+
+const humidityErrorLoader = () => {
+  if (sentErrors.humidity == false) {
+    $('#humidity-error').css({'top': '41%'})
+    setTimeout(() => {
+      $('#humidity-error').animate({opacity : 1}, 
+        {duration : 500, queue : false})
+        .animate({'top' : '+=21%'},
+        {duration : 500, queue : false});
+  
+        setTimeout(() => {
+          $('#humidity-error').animate({opacity : 0}, 
+            {duration : 500, queue : false})
+            .animate({'top' : '+=21%'},
+            {duration : 500, queue : false})
+        }, 5000)
+    }, 1000)
+    sentErrors.humidity = true
+  }
+}
 
 
 function setQueryOther(e) {
@@ -250,6 +302,10 @@ function displayResults(results) {
   } else {
     city.innerText = `${results.name}, ${results.sys.country}`
     loadGraph(results.coord.lat, results.coord.lon)
+
+
+    sentErrors.temp = false
+    sentErrors.humidity = false
     
     hiLow.innerText = `High/Low: ${Math.floor(results.main.temp_max)}°F/${Math.floor(results.main.temp_min)}°F`
     startTemp.innerText = `${Math.floor(results.main.temp)}°F`
