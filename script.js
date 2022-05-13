@@ -16,26 +16,27 @@ const time = document.querySelector('#time')
 const weatherIcon = document.querySelector('#weather-icon')
 const dropDown = document.querySelector('#temp-dropdown')
 
-const makeDate = () => {
-  let newDate = `${new Date()}`.split(' ')
-  newDate.splice(0, 1)
-  newDate.splice(3, 5)
-  const result = newDate.join(' ')
-  return result
+const makeDate = (timeZone) => {
+  let newDate = new Date(Date.now() + timeZone * 1000).toLocaleDateString(undefined, {
+    weekday: "long",
+    month: "long",
+    day: "numeric"
+    });
+  return newDate
 }
 
 // I had to use jquery to get a cool smooth animation ;-; sorry
 let lazyPatch = 0
 $("#temp-dropper").click(() => {
   if (lazyPatch == 0) {
-    $('#temp-dropper').animate({"margin-left": '+=220', queue : false}).css('transform', 'rotate(90deg)');
+    $('#temp-dropper').css("margin-left", '+=220').css('transform', 'rotate(90deg)');
     $('#temp-dropdown').animate({opacity : 1}, 
     {duration : 500, queue : false})
     .animate({'margin-left' : '+=210'},
     {duration : 500, queue : false});
     lazyPatch += 1
   } else {
-    $('#temp-dropper').animate({"margin-left": '-=220', queue : false}).css('transform', 'rotate(270deg)');
+    $('#temp-dropper').css("margin-left", '-=220').css('transform', 'rotate(270deg)');
     $('#temp-dropdown').animate({opacity: 0, "margin-left": '-=210'}, 500);
     lazyPatch -= 1
   }
@@ -61,15 +62,15 @@ $('#hourly-dropper').click(() => {
 const searchBox = document.querySelector('.search-box')
 searchBox.addEventListener('keypress', setQuery)
 
-const searchButton = document.querySelector('#search-button')
+const searchButton = document.querySelector('#button')
 searchButton.addEventListener('click', setQueryOther)
 
 function setQuery(e) {
   if(e.keyCode === 13) {
     if (searchBox.value) {
       getResults(searchBox.value)
-    } else {
-      alert('Please enter a city into the search bar!')
+     } else {
+      alert('Please enter a city, state, or zip code into the search bar!')
     }
   }
 }
@@ -188,7 +189,16 @@ const genTemps = (arr) => {
                         // so we can just push the element to the array with no changes and use that as data.
     }
   })
+  if (result.length < 28) {
+    tempErrorLoader()
+  }
+    // alert("Whoops! Something went wrong. Looks like we're missing some temperatures.")
   return result // does the thing
+}
+
+let sentErrors = {
+  temp: false,
+  humidity: false
 }
 
 // Okay, I have no idea what's going on with this function... It's totally the same in function as the other two,
@@ -202,15 +212,58 @@ const getHumidity = (arr) => {
       result.push(arr[i])
     }
   }
+  if (result.length < 28) {
+    humidityErrorLoader()
+  }
   return result // does the thing
 } 
+
+const tempErrorLoader = () => {
+  if (sentErrors.temp == false) {
+    $('#temp-error').css({'top': '20%'})
+    setTimeout(() => {
+      $('#temp-error').animate({opacity : 1}, 
+        {duration : 500, queue : false})
+        .animate({'top' : '+=21%'},
+        {duration : 500, queue : false});
+  
+        setTimeout(() => {
+          $('#temp-error').animate({opacity : 0}, 
+            {duration : 500, queue : false})
+            .animate({'top' : '+=21%'},
+            {duration : 500, queue : false})
+        }, 5000)
+    }, 1000)
+    sentErrors.temp = true
+  }
+}
+
+const humidityErrorLoader = () => {
+  if (sentErrors.humidity == false) {
+    $('#humidity-error').css({'top': '41%'})
+    setTimeout(() => {
+      $('#humidity-error').animate({opacity : 1}, 
+        {duration : 500, queue : false})
+        .animate({'top' : '+=21%'},
+        {duration : 500, queue : false});
+  
+        setTimeout(() => {
+          $('#humidity-error').animate({opacity : 0}, 
+            {duration : 500, queue : false})
+            .animate({'top' : '+=21%'},
+            {duration : 500, queue : false})
+        }, 5000)
+    }, 1000)
+    sentErrors.humidity = true
+  }
+}
 
 
 function setQueryOther(e) {
   if (searchBox.value) {
     getResults(searchBox.value)
   } else {
-    alert('Please enter a city into the search bar!')
+    alert('Please enter a city, state, or zip code into the search bar!')
   }
 }
 
@@ -231,9 +284,15 @@ const loadPos = (pos) => {
 
 
 function getResults(city) {
+  if (!parseInt(city)) {
     fetch(`${apiInfo.base}q=${city}&units=imperial&APPID=${key}`)
     .then(resp => resp.json())
     .then(data => displayResults(data));
+  } else {
+    fetch(`${apiInfo.base}zip=${city}&units=imperial&APPID=${key}`)
+    .then(resp => resp.json())
+    .then(data => displayResults(data));
+  }
 }
 
 
@@ -242,21 +301,20 @@ function displayResults(results) {
     alert(`${results.message}`)
   } else {
     city.innerText = `${results.name}, ${results.sys.country}`
-
     loadGraph(results.coord.lat, results.coord.lon)
+
+
+    sentErrors.temp = false
+    sentErrors.humidity = false
     
     hiLow.innerText = `High/Low: ${Math.floor(results.main.temp_max)}°F/${Math.floor(results.main.temp_min)}°F`
     startTemp.innerText = `${Math.floor(results.main.temp)}°F`
     feelsLike.innerText = `Feels-like: ${Math.floor(results.main.feels_like)}°F`
     humidity.innerText = `Humidity: ${results.main.humidity}%`
     weather.innerText = (results.weather[`0`].description).replace(/(?:^|\s)\S/g, (a) => a.toUpperCase())
-    date.innerText = makeDate()
-    if (results.weather['0'].main == 'Clouds') {
-      weatherIcon.src = 'https://cdn-icons-png.flaticon.com/512/0/74.png'
-    } else if (results.weather['0'].main ==   'Clear') {
-      weatherIcon.src = 'https://cdn1.iconfinder.com/data/icons/weather-18/512/sunny_clear_blu_sky-512.png'
-    }
-  }
+    date.innerText = makeDate(results.timezone)
+    weatherIcon.src = `http://openweathermap.org/img/wn/${results.weather['0'].icon}@2x.png`
+   }
 }
 
   getLocation()

@@ -31,14 +31,17 @@
         </div> 
         
         <div id="search-div">
-            <input class='search-box' type="text" autocomplete="off" autocapitalize="on" placeholder="Search for city..."/>
-            <button id="search-button">Search</button>
+            <input class='search-box' type="text" autocomplete="off" autocapitalize="on" placeholder="Search by city, state, or zip code..."/>
+            <img id="button" src="./src/search-icon.png"></img>
         </div>
 
         <div id="hourly-dropdown-div">
             <img id="hourly-dropper" src="https://cdn2.iconfinder.com/data/icons/flat-blue-arrow-1/64/05-_down-_dropdown-bellow-_arrow-512.png" alt=''></img>
             <canvas id="hourly-dropdown"></canvas>
         </div>
+
+        <div id="temp-error" class="error-popup">Whoops! Looks like we couldn't retrieve some temperature data. Sorry for the inconvenience!</div>
+        <div id="humidity-error" class="error-popup">Whoops! Looks like we couldn't retrieve some humidity data. Sorry for the inconvenience!</div>
 
         <div id="weather-div">
             <p id="weather">Loading...</p> 
